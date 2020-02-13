@@ -7,6 +7,7 @@ class Api::V1::UserController < ApplicationController
     render json: @users 
   end
 
+  # create user
   def create 
 
     body = {
@@ -24,8 +25,23 @@ class Api::V1::UserController < ApplicationController
       Authorization: "Bearer #{auth_params["access_token"]}"
     }
 
-    private
+    user_response = RestClient.get("https://api.spotify.com/v1/me", header)
+    user_params = JSON.parse(user_response.body)
 
+  end
+
+  # assigns id to user
+  def update
+    @user = User.find_by(id: params[:id])
+    puts "params[:id]",  params[:id]
+  end
+
+  def destroy 
+    @user = User.find_by(id: params[:id])
+    @user.destroy
+  end
+
+  private
   # Params to match my data structure 
   def user_params
     params.require(:user).permit(:id, :name, :user_image, :country, :user_spotify_url, :spotify_id, :access_token, :refresh_token)
