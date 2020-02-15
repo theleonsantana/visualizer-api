@@ -28,18 +28,29 @@ class Api::V1::UserController < ApplicationController
     user_response = RestClient.get("https://api.spotify.com/v1/me", header)
     user_params = JSON.parse(user_response.body)
 
+    @user = User.find_or_create_by(
+      name: user_params["display_name"],
+      user_spotify_url: user_params["external_urls"]["spotify"],
+      user_spotify_id: user_params["id"]
+    )
+
+    image = user_params["images"][0] ? user_params["images"][0]["url"] : nil
+    country = user_params["country"] ? user_params["country"] : nil
+  
+    @user.update(image: image, country: country)
+
+    if @user.access_token_expired?
+      @user.refresh_access_token
+    else
+      @user.update(
+        access_token: auth_params["access_token"],
+        refresh_token: auth_params["refresh_token"]
+      )
+    end
+
+    redirect_to "http://localhost:3006"
+
   end
-
-  @user = User.find_or_create_by(
-    name: user_params["display_name"],
-    user_spotify_url: user_params["external_urls"]["spotify"],
-    user_spotify_id: user_params["id"]
-  )
-
-  image = user_params["images"][0] ? user_params["images"][0]["url"] : nil
-  country = user_params["country"] ? user_params["country"] : nil
- 
-  @user.update(image: image, country: country)
 
   # assigns id to user
   def update
