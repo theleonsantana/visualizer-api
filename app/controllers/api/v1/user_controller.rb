@@ -30,6 +30,17 @@ class Api::V1::UserController < ApplicationController
 
   end
 
+  @user = User.find_or_create_by(
+    name: user_params["display_name"],
+    user_spotify_url: user_params["external_urls"]["spotify"],
+    user_spotify_id: user_params["id"]
+  )
+
+  image = user_params["images"][0] ? user_params["images"][0]["url"] : nil
+  country = user_params["country"] ? user_params["country"] : nil
+ 
+  @user.update(image: image, country: country)
+
   # assigns id to user
   def update
     @user = User.find_by(id: params[:id])
