@@ -1,6 +1,6 @@
 require 'rest-client'
 
-class Api::V1::UserController < ApplicationController
+class Api::V1::UsersController < ApplicationController
 
   def index 
     @users = User.all
@@ -31,8 +31,7 @@ class Api::V1::UserController < ApplicationController
     @user = User.find_or_create_by(
       name: user_params["display_name"],
       user_spotify_url: user_params["external_urls"]["spotify"],
-      user_spotify_id: user_params["id"]
-    )
+      user_spotify_id: user_params["id"])
 
     image = user_params["images"][0] ? user_params["images"][0]["url"] : nil
     country = user_params["country"] ? user_params["country"] : nil
@@ -66,6 +65,6 @@ class Api::V1::UserController < ApplicationController
   private
   # Params to match my data structure 
   def user_params
-    params.require(:user).permit(:id, :name, :user_image, :country, :user_spotify_url, :spotify_id, :access_token, :refresh_token)
+    params.require(:user).permit(:id, :name, :user_image, :country, :user_spotify_url, :user_spotify_id, :access_token, :refresh_token)
   end
 end
