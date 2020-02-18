@@ -36,7 +36,7 @@ class Api::V1::UsersController < ApplicationController
     image = user_params["images"][0] ? user_params["images"][0]["url"] : nil
     country = user_params["country"] ? user_params["country"] : nil
   
-    @user.update(image: image, country: country)
+    @user.update(user_image: image, country: country)
 
     if @user.access_token_expired?
       @user.refresh_access_token
