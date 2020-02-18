@@ -3,7 +3,9 @@ Rails.application.routes.draw do
 
   namespace :api do
     namespace :v1 do
+
       resources :users
+    
     end
   end
 
@@ -13,7 +15,8 @@ Rails.application.routes.draw do
     
       get '/login', to: "auth#spotify_request"
       get '/auth', to: "auth#show"
-      get '/user' to: "user#create"
+      get '/user', to: "users#create"
+
     end
   end
   
