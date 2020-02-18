@@ -6,7 +6,7 @@ class CreateUsers < ActiveRecord::Migration[6.0]
       t.string :user_image
       t.string :country
       t.string :user_spotify_url
-      t.string :spotify_id
+      t.string :user_spotify_id
       t.string :access_token
       t.string :refresh_token
 
