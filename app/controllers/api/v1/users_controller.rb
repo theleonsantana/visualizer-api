@@ -8,8 +8,8 @@ class Api::V1::UsersController < ApplicationController
   end
 
   # create user
-  def create 
-
+  def create
+  
     body = {
       grant_type: 'authorization_code',
       code: params[:code],
@@ -46,9 +46,9 @@ class Api::V1::UsersController < ApplicationController
         refresh_token: auth_params["refresh_token"]
       )
     end
-
+  
     redirect_to "http://localhost:3006"
-
+    
   end
 
   # assigns id to user
