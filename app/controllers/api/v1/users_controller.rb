@@ -18,36 +18,40 @@ class Api::V1::UsersController < ApplicationController
       client_secret: Rails.application.credentials[Rails.env.to_sym][:spotify][:client_secret]
     }
 
-    auth_response = RestClient.post('https://accounts.spotify.com/api/token', body)
-    auth_params = JSON.parse(auth_response.body)
-
-    header = {
-      Authorization: "Bearer #{auth_params["access_token"]}"
-    }
-
-    user_response = RestClient.get("https://api.spotify.com/v1/me", header)
-    user_params = JSON.parse(user_response.body)
-
-    @user = User.find_or_create_by(
-      name: user_params["display_name"],
-      user_spotify_url: user_params["external_urls"]["spotify"],
-      user_spotify_id: user_params["id"])
-
-    image = user_params["images"][0] ? user_params["images"][0]["url"] : nil
-    country = user_params["country"] ? user_params["country"] : nil
-  
-    @user.update(user_image: image, country: country)
-
-    if @user.access_token_expired?
-      @user.refresh_access_token
+    if params[:error] == "access_denied"
+      redirect_to "http://localhost:3006"
     else
-      @user.update(
-        access_token: auth_params["access_token"],
-        refresh_token: auth_params["refresh_token"]
-      )
+      auth_response = RestClient.post('https://accounts.spotify.com/api/token', body)
+      auth_params = JSON.parse(auth_response.body)
+
+      header = {
+        Authorization: "Bearer #{auth_params["access_token"]}"
+      }
+
+      user_response = RestClient.get("https://api.spotify.com/v1/me", header)
+      user_params = JSON.parse(user_response.body)
+
+      @user = User.find_or_create_by(
+        name: user_params["display_name"],
+        user_spotify_url: user_params["external_urls"]["spotify"],
+        user_spotify_id: user_params["id"])
+
+      image = user_params["images"][0] ? user_params["images"][0]["url"] : nil
+      country = user_params["country"] ? user_params["country"] : nil
+    
+      @user.update(user_image: image, country: country)
+
+      if @user.access_token_expired?
+        @user.refresh_access_token
+      else
+        @user.update(
+          access_token: auth_params["access_token"],
+          refresh_token: auth_params["refresh_token"]
+        )
+      end
+    
+      redirect_to "http://localhost:3006"
     end
-  
-    redirect_to "http://localhost:3006"
     
   end
 
