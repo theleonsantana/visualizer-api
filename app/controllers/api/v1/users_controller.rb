@@ -19,7 +19,7 @@ class Api::V1::UsersController < ApplicationController
     }
 
     if params[:error] == "access_denied"
-      redirect_to "http://localhost:3006"
+      redirect_to "http://localhost:3006/login"
     else
       auth_response = RestClient.post('https://accounts.spotify.com/api/token', body)
       auth_params = JSON.parse(auth_response.body)
@@ -50,7 +50,7 @@ class Api::V1::UsersController < ApplicationController
         )
       end
     
-      redirect_to "http://localhost:3006"
+      redirect_to "http://localhost:3006/app"
     end
     
   end
