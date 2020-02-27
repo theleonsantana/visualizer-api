@@ -7,6 +7,11 @@ class Api::V1::UsersController < ApplicationController
     render json: @users 
   end
 
+  def show
+    @user = User.find_by(id: params[:id])
+    render json: @user
+  end
+
   # create user
   def create
   
@@ -41,14 +46,19 @@ class Api::V1::UsersController < ApplicationController
     
       @user.update(user_image: image, country: country)
 
-      if @user.access_token_expired?
-        @user.refresh_access_token
-      else
-        @user.update(
-          access_token: auth_params["access_token"],
-          refresh_token: auth_params["refresh_token"]
-        )
-      end
+      # if @user.access_token_expired?
+      #   @user.refresh_access_token
+      # else
+      #   @user.update(
+      #     access_token: auth_params["access_token"],
+      #     refresh_token: auth_params["refresh_token"]
+      #   )
+      # end
+    
+      cookies[:access_token_visualizer] = {
+        value: auth_params["access_token"],
+        expires: 1.hour.from_now, 
+      }
     
       redirect_to "http://localhost:3006/app"
     end

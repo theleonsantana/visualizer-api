@@ -11,7 +11,7 @@ class Api::V1::AuthController < ApplicationController
       playlist-read-collaborative
       playlist-modify-private
       user-modify-playback-state
-      streaming
+      streaming 
       user-read-email
       user-read-private
       user-top-read
