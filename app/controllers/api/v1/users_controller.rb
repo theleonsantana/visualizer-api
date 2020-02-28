@@ -59,6 +59,11 @@ class Api::V1::UsersController < ApplicationController
         value: auth_params["access_token"],
         expires: 1.hour.from_now, 
       }
+
+      cookies[:user_id] = {
+        value: user_params["id"],
+        expires: 1.hour.from_now, 
+      }
     
       redirect_to "http://localhost:3006/app"
     end
