@@ -17,6 +17,7 @@ class User < ApplicationRecord
         client_id: Rails.application.credentials[Rails.env.to_sym][:spotify][:client_id],
         client_secret: Rails.application.credentials[Rails.env.to_sym][:spotify][:client_secret]
       }
+      # Make sure the token still active
       auth_response = RestClient.post('https://accounts.spotify.com/api/token', body)
       auth_params = JSON.parse(auth_response)
       self.update(access_token: auth_params["access_token"])
